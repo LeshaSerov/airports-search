@@ -1,38 +1,35 @@
-import domain.ElementOfNotation;
-import domain.Filter;
+import domainParsing.*;
 import exception.ComparisonOperatorException;
 import exception.StringIsNotValidateException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static domain.ElementOfNotation.Type.*;
-
 public class SearchLineParser {
 
-    public List<ElementOfNotation> parse(String searchLine) throws StringIsNotValidateException, ComparisonOperatorException {
-        List<ElementOfNotation> resultList = new ArrayList<>();
+    public List<AbstractElementOfNotation> parse(String searchLine) throws StringIsNotValidateException, ComparisonOperatorException {
+        List<AbstractElementOfNotation> resultList = new ArrayList<>();
         StringBuilder workString = new StringBuilder(searchLine.toLowerCase());
 
         while (workString.length() != 0) {
-            if (workString.toString().startsWith(OPENING_BRACKET.getValue())) {
-                resultList.add(new ElementOfNotation(OPENING_BRACKET));
-                workString.delete(0, OPENING_BRACKET.getValue().length());
+            if (workString.toString().startsWith(OpeningBracket.getValue())) {
+                resultList.add(new OpeningBracket());
+                workString.delete(0, OpeningBracket.getValue().length());
 
-            } else if (workString.toString().startsWith(CLOSING_BRACKET.getValue())) {
-                resultList.add(new ElementOfNotation(CLOSING_BRACKET));
-                workString.delete(0, CLOSING_BRACKET.getValue().length());
+            } else if (workString.toString().startsWith(ClosingBracket.getValue())) {
+                resultList.add(new ClosingBracket());
+                workString.delete(0, ClosingBracket.getValue().length());
 
-            } else if (workString.toString().startsWith(CONJUNCTION.getValue())) {
-                resultList.add(new ElementOfNotation(CONJUNCTION));
-                workString.delete(0, CONJUNCTION.getValue().length());
+            } else if (workString.toString().startsWith(Conjunction.getValue())) {
+                resultList.add(new Conjunction());
+                workString.delete(0, Conjunction.getValue().length());
 
-            } else if (workString.toString().startsWith(DISJUNCTION.getValue())) {
-                resultList.add(new ElementOfNotation(DISJUNCTION));
-                workString.delete(0, DISJUNCTION.getValue().length());
+            } else if (workString.toString().startsWith(Disjunction.getValue())) {
+                resultList.add(new Disjunction());
+                workString.delete(0, Disjunction.getValue().length());
 
-            } else if (workString.toString().startsWith(FILTER.getValue())) {
-                workString.delete(0, FILTER.getValue().length());
+            } else if (workString.toString().startsWith(Filter.getValue())) {
+                workString.delete(0, Filter.getValue().length());
                 resultList.add(parseFilter(workString));
 
             } else {
@@ -70,12 +67,12 @@ public class SearchLineParser {
             conditionFilter = workString.substring(0, lengthCondition);
             workString.delete(0, lengthCondition);
         }
-        return new Filter(FILTER, indexFilter, comparisonOperatorFilter, conditionFilter);
+        return new Filter(indexFilter, comparisonOperatorFilter, conditionFilter);
     }
 
 }
 
-//    domain.Filter parseFilter(Integer iterator, String workString) throws ComparisonOperatorException {
+//    domainParsing.Filter parseFilter(Integer iterator, String workString) throws ComparisonOperatorException {
 //        //Парсинг номер столбца
 //        iterator++;
 //        int lengthNumber = workString.indexOf("]");
@@ -83,7 +80,7 @@ public class SearchLineParser {
 //        iterator = lengthNumber + 1;
 //
 //        //Парсинг знака операции
-//        domain.Filter.ComparisonOperator comparisonOperatorFilter = domain.Filter.ComparisonOperator
+//        domainParsing.Filter.ComparisonOperator comparisonOperatorFilter = domainParsing.Filter.ComparisonOperator
 //                .fromValue(workString.substring(iterator, ++iterator));
 //
 //        //Парсинг условия
@@ -104,7 +101,7 @@ public class SearchLineParser {
 //            conditionFilter = workString.substring(iterator, iterator + lengthCondition);
 //            iterator += lengthCondition;
 //        }
-//        return new domain.Filter(domain.FILTER, indexFilter, comparisonOperatorFilter, conditionFilter);
+//        return new domainParsing.Filter(domain.FILTER, indexFilter, comparisonOperatorFilter, conditionFilter);
 //    }
 //}
 
@@ -119,21 +116,21 @@ public class SearchLineParser {
 //            iterator++;
 //            switch (s.toString()) {
 //                case "{": {
-//                    result.add(domain.ElementOfNotation.OPENING_BRACKET);
+//                    result.add(domain.domainParsing.ElementOfNotation.OPENING_BRACKET);
 //                    break;
 //                }
 //                case "}": {
-//                    result.add(domain.ElementOfNotation.CLOSING_BRACKET);
+//                    result.add(domain.domainParsing.ElementOfNotation.CLOSING_BRACKET);
 //                    break;
 //                }
 //                case "&": {
-//                    result.add(domain.ElementOfNotation.CONJUNCTION);
+//                    result.add(domain.domainParsing.ElementOfNotation.CONJUNCTION);
 //                    break;
 //                }
 //                case "|": {
 //                    s.append(workString.substring(iterator, ++iterator));
 //                    if (s.toString().equals("||")) {
-//                        result.add(domain.ElementOfNotation.DISJUNCTION);
+//                        result.add(domain.domainParsing.ElementOfNotation.DISJUNCTION);
 //                    } else {
 //                        throw new exception.StringIsNotValidateException(s + " : " + iterator);
 //                    }
@@ -157,7 +154,7 @@ public class SearchLineParser {
 //
 //                        }
 //
-//                        domain.Filter.ComparisonOperator comparisonOperator = domain.Filter.ComparisonOperator.fromValue(workString.substring(iterator, iterator + 1));
+//                        domainParsing.Filter.ComparisonOperator comparisonOperator = domainParsing.Filter.ComparisonOperator.fromValue(workString.substring(iterator, iterator + 1));
 //                        iterator++;
 //
 //
@@ -172,7 +169,7 @@ public class SearchLineParser {
 //                            iterator++;
 //
 //                        }
-//                        result.add(new domain.Filter(Integer.parseInt(stringNumberColumns.toString()), notation.toString(), comparisonOperator));
+//                        result.add(new domainParsing.Filter(Integer.parseInt(stringNumberColumns.toString()), notation.toString(), comparisonOperator));
 //                        break;
 //                    } else {
 //                        throw new exception.StringIsNotValidateException(s + " : " + iterator);
@@ -186,26 +183,26 @@ public class SearchLineParser {
 //        return result;
 //    }
 
-//            domain.ElementOfNotation element = domain.ElementOfNotation.fromValue(s.substring(iterator,iterator+1));
-//            if (element == domain.ElementOfNotation.FILTER)
+//            domain.domainParsing.ElementOfNotation element = domain.domainParsing.ElementOfNotation.fromValue(s.substring(iterator,iterator+1));
+//            if (element == domain.domainParsing.ElementOfNotation.FILTER)
 //            {
 //                iterator++;
 //                while (s.substring(iterator).)
 //
 //
-//                result.add(new domain.Filter())
+//                result.add(new domainParsing.Filter())
 //            }
 
 //            String s = stringBuilder.substring(iterator, iterator++);
-//            domain.ElementOfNotation element = domain.ElementOfNotation.fromValue(s);
-//            if (element == domain.ElementOfNotation.NOT_FOUND) {
+//            domain.domainParsing.ElementOfNotation element = domain.domainParsing.ElementOfNotation.fromValue(s);
+//            if (element == domain.domainParsing.ElementOfNotation.NOT_FOUND) {
 //                s += stringBuilder.substring(iterator, iterator++);
-//                if (domain.ElementOfNotation.fromValue(s) == domain.ElementOfNotation.DISJUNCTION) {
+//                if (domain.domainParsing.ElementOfNotation.fromValue(s) == domain.domainParsing.ElementOfNotation.DISJUNCTION) {
 //                    result.add(element);
 //                }
 //                else {
 //                    s += stringBuilder.substring(iterator, iterator + 4);
-//                    if (domain.ElementOfNotation.fromValue(s) == domain.ElementOfNotation.FILTER) {
+//                    if (domain.domainParsing.ElementOfNotation.fromValue(s) == domain.domainParsing.ElementOfNotation.FILTER) {
 //
 //                    }
 //                }

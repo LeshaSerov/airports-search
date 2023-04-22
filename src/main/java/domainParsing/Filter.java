@@ -1,4 +1,4 @@
-package domain;
+package domainParsing;
 
 import exception.ComparisonOperatorException;
 import lombok.Getter;
@@ -6,21 +6,23 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Filter extends ElementOfNotation{
+public class Filter extends AbstractElementOfNotation {
+    static private String value = "column";
+
+    public static String getValue() {
+        return value;
+    }
     private int numberColumns;
     private ComparisonOperator comparisonOperator;
     private String notation;
-    public Filter(Type type, int numberColumns, ComparisonOperator comparisonOperator, String notation ) {
-        super(type);
+    public Filter(int numberColumns, ComparisonOperator comparisonOperator, String notation ) {
         this.numberColumns = numberColumns;
         this.comparisonOperator = comparisonOperator;
         this.notation = notation;
     }
-    @Override
     public String toString() {
-        return "domain.Filter{" +
-                "type=" + super.getType() +
-                ", numberColumns=" + numberColumns +
+        return "domainParsing.Filter{" +
+                "numberColumns=" + numberColumns +
                 ", comparisonOperator=" + comparisonOperator +
                 ", notation='" + notation + '\'' +
                 '}';
