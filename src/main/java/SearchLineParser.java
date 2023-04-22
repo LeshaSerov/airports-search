@@ -10,7 +10,6 @@ import static domain.ElementOfNotation.Type.*;
 
 public class SearchLineParser {
 
-
     public List<ElementOfNotation> parse(String searchLine) throws StringIsNotValidateException, ComparisonOperatorException {
         List<ElementOfNotation> resultList = new ArrayList<>();
         StringBuilder workString = new StringBuilder(searchLine.toLowerCase());
@@ -18,22 +17,22 @@ public class SearchLineParser {
         while (workString.length() != 0) {
             if (workString.toString().startsWith(OPENING_BRACKET.getValue())) {
                 resultList.add(new ElementOfNotation(OPENING_BRACKET));
-                workString.delete(0,OPENING_BRACKET.getValue().length());
+                workString.delete(0, OPENING_BRACKET.getValue().length());
 
             } else if (workString.toString().startsWith(CLOSING_BRACKET.getValue())) {
                 resultList.add(new ElementOfNotation(CLOSING_BRACKET));
-                workString.delete(0,CLOSING_BRACKET.getValue().length());
+                workString.delete(0, CLOSING_BRACKET.getValue().length());
 
             } else if (workString.toString().startsWith(CONJUNCTION.getValue())) {
                 resultList.add(new ElementOfNotation(CONJUNCTION));
-                workString.delete(0,CONJUNCTION.getValue().length());
+                workString.delete(0, CONJUNCTION.getValue().length());
 
             } else if (workString.toString().startsWith(DISJUNCTION.getValue())) {
                 resultList.add(new ElementOfNotation(DISJUNCTION));
-                workString.delete(0,DISJUNCTION.getValue().length());
+                workString.delete(0, DISJUNCTION.getValue().length());
 
             } else if (workString.toString().startsWith(FILTER.getValue())) {
-                workString.delete(0,FILTER.getValue().length());
+                workString.delete(0, FILTER.getValue().length());
                 resultList.add(parseFilter(workString));
 
             } else {
@@ -44,32 +43,32 @@ public class SearchLineParser {
     }
 
     //Парсинг тела фильтра
-    Filter parseFilter (StringBuilder workString) throws ComparisonOperatorException {
+    Filter parseFilter(StringBuilder workString) throws ComparisonOperatorException {
         //Парсинг номер столбца
         int lengthNumber = workString.indexOf("]");
         int indexFilter = Integer.parseInt(workString.substring(1, lengthNumber));
-        workString.delete(0,lengthNumber + 1);
+        workString.delete(0, lengthNumber + 1);
 
         //Парсинг знака операции
         Filter.ComparisonOperator comparisonOperatorFilter = Filter.ComparisonOperator
                 .fromValue(workString.substring(0, 1));
-        workString.delete(0,1);
+        workString.delete(0, 1);
 
         //Парсинг условия
         char c = workString.charAt(0);
         String conditionFilter = "";
         if (c == '\'') {
-            workString.delete(0,1);
+            workString.delete(0, 1);
             int lengthCondition = workString.indexOf("'");
             conditionFilter = workString.substring(0, lengthCondition);
-            workString.delete(0,lengthCondition + 1);
+            workString.delete(0, lengthCondition + 1);
         } else {
             int distanceToOperatorCONJUNCTION = workString.indexOf("&") > 0 ? workString.indexOf("&") : Integer.MAX_VALUE;
             int distanceToOperatorDISJUNCTION = workString.indexOf("|") > 0 ? workString.indexOf("|") : Integer.MAX_VALUE;
             int lengthCondition = Math.min(distanceToOperatorCONJUNCTION, distanceToOperatorDISJUNCTION);
-            lengthCondition = Math.min(lengthCondition,workString.length());
+            lengthCondition = Math.min(lengthCondition, workString.length());
             conditionFilter = workString.substring(0, lengthCondition);
-            workString.delete(0,lengthCondition);
+            workString.delete(0, lengthCondition);
         }
         return new Filter(FILTER, indexFilter, comparisonOperatorFilter, conditionFilter);
     }

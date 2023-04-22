@@ -15,9 +15,8 @@ public class CsvFilesReader {
 //        return Files.newBufferedReader(path).lines().collect(Collectors.toList());
     }
 
-    static public List<String> readDefinedStrings(Path path, List<Integer> listNumbersStrings) throws IOException {
+    static public List<String> readDefinedStrings(String path, List<Integer> listNumbersStrings) throws IOException {
         List<String> resultList = new ArrayList<>();
-
 //        First
 //        List<String> stringList = Files.readAllLines(path);
 //        for (int i:

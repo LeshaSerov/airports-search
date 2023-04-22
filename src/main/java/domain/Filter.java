@@ -19,10 +19,10 @@ public class Filter extends ElementOfNotation{
     @Override
     public String toString() {
         return "domain.Filter{" +
-                "numberColumns=" + numberColumns +
+                "type=" + super.getType() +
+                ", numberColumns=" + numberColumns +
                 ", comparisonOperator=" + comparisonOperator +
                 ", notation='" + notation + '\'' +
-                ", type=" + super.getType() +
                 '}';
     }
     public enum ComparisonOperator {
