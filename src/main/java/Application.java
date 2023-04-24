@@ -1,4 +1,4 @@
-import newdomain.SearchElement;
+import domain.SearchElement;
 
 import java.util.*;
 
@@ -10,7 +10,9 @@ public class Application {
             long start = System.nanoTime();
 
             String searchString = "column[1]>10&(column[5]='GKA'||column[3]>'@')||column[1]<100";
-//            List<AbstractElementOfSearchLine> result = new SearchStringParser().parse(searchLine);
+
+
+            //            List<AbstractElementOfSearchLine> result = new SearchStringParser().parse(searchLine);
 //
 //            ReversePolishNotation reversePolishNotation = new ReversePolishNotation();
 //            List<AbstractElementOfSearchLine> convertExpression = reversePolishNotation.convertExpression(result);
@@ -27,7 +29,7 @@ public class Application {
 //            for (AbstractElementOfSearchLine i : convertExpression) {
 //                System.out.println(i.toString());
 //            }
-            List<SearchElement> list = new SearchParser().parse(searchString);
+            List<SearchElement> list = new SearchStringParser().parse(searchString);
 
 
             long finish = System.nanoTime();

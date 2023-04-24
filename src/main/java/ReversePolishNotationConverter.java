@@ -1,11 +1,5 @@
-import domain.parsing.*;
-import exception.PairBracketException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-
-public class ReversePolishNotation {
+public class ReversePolishNotationConverter {
+    
     public List<AbstractElementOfSearchLine> convertExpression(List<AbstractElementOfSearchLine> elementOfSearchLines) throws PairBracketException {
         //Реализация алгоритма Дейкстра
         List<AbstractElementOfSearchLine> resultList = new ArrayList<>();
