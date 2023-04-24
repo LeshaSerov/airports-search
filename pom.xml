@@ -9,7 +9,7 @@
 <!--      <plugin>-->
 <!--        <groupId>fr.inria.gforge.spoon</groupId>-->
 <!--        <artifactId>spoon-maven-plugin</artifactId>-->
-<!--        <version>README</version>&lt;!&ndash; replace LATEST by the value of the badge at the top of the README &ndash;&gt;-->
+<!--        <version>README</version>&lt;!&ndash; replace THE LATEST by the value of the badge at the top of the README &ndash;&gt;-->
 <!--        <executions>-->
 <!--          <execution>-->
 <!--            <phase>generate-sources</phase>-->

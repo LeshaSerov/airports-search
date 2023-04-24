@@ -1,0 +1,47 @@
+package newdomain;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+// Класс для представления фильтра
+@Getter
+@Setter
+@AllArgsConstructor
+@ToString
+public class FilterElement implements SearchElement {
+    private int columnNumber;
+    private FilterType operator;
+    private String value;
+
+    final static private String startWishString = "column";
+
+    public static String getStartWishString() {
+        return startWishString;
+    }
+
+    // Enum для представления фильтров
+    @Getter
+    public enum FilterType {
+        LESS_THAN("<"),
+        GREATER_THAN(">"),
+        EQUAL_TO("="),
+        NOT_EQUAL_TO("<>");
+
+        private final String value;
+
+        FilterType(String value) {
+            this.value = value;
+        }
+
+        public static FilterType valueOfSymbol(String operatorSymbol) {
+            for (FilterType filterType : FilterType.values()) {
+                if (filterType.value.equals(operatorSymbol)) {
+                    return filterType;
+                }
+            }
+            throw new IllegalArgumentException("Unknown symbol: " + operatorSymbol);
+        }
+    }
+}
