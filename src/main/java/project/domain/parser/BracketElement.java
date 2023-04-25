@@ -1,4 +1,4 @@
-package domain;
+package project.domain.parser;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,12 +10,12 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @ToString
-public class BracketElement implements SearchElement {
-    private BracketType bracket;
+public class BracketElement implements SearchElement  {
+    private BracketType bracketType;
 
     @Override
     public BracketType getType() {
-        return this.getBracket();
+        return this.getBracketType();
     }
 
     // Enum для представления скобок

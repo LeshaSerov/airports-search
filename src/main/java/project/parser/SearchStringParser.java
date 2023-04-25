@@ -1,39 +1,36 @@
-import domain.BracketElement;
-import domain.FilterElement;
-import domain.OperatorElement;
-import domain.SearchElement;
+package project.parser;
+
+import project.domain.parser.BracketElement;
+import project.domain.parser.FilterElement;
+import project.domain.parser.OperatorElement;
+import project.domain.parser.SearchElement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static domain.BracketElement.BracketType.*;
-import static domain.OperatorElement.OperatorType.*;
-import domain.FilterElement.FilterType;
-
 public class SearchStringParser {
 
     public List<SearchElement> parse(String searchString) {
-
         List<SearchElement> resultList = new ArrayList<>();
         StringBuilder workStringBuilder = new StringBuilder(searchString.toLowerCase());
 
         while (workStringBuilder.length() != 0) {
 
-            if (workStringBuilder.toString().startsWith(OPEN.getValue())) {
-                resultList.add(new BracketElement(OPEN));
-                workStringBuilder.delete(0, OPEN.getValue().length());
+            if (workStringBuilder.toString().startsWith(BracketElement.BracketType.OPEN.getValue())) {
+                resultList.add(new BracketElement(BracketElement.BracketType.OPEN));
+                workStringBuilder.delete(0, BracketElement.BracketType.OPEN.getValue().length());
 
-            } else if (workStringBuilder.toString().startsWith(CLOSE.getValue())) {
-                resultList.add(new BracketElement(CLOSE));
-                workStringBuilder.delete(0, CLOSE.getValue().length());
+            } else if (workStringBuilder.toString().startsWith(BracketElement.BracketType.CLOSE.getValue())) {
+                resultList.add(new BracketElement(BracketElement.BracketType.CLOSE));
+                workStringBuilder.delete(0, BracketElement.BracketType.CLOSE.getValue().length());
 
-            } else if (workStringBuilder.toString().startsWith(AND.getValue())) {
-                resultList.add(new OperatorElement(AND));
-                workStringBuilder.delete(0, AND.getValue().length());
+            } else if (workStringBuilder.toString().startsWith(OperatorElement.OperatorType.AND.getValue())) {
+                resultList.add(new OperatorElement(OperatorElement.OperatorType.AND));
+                workStringBuilder.delete(0, OperatorElement.OperatorType.AND.getValue().length());
 
-            } else if (workStringBuilder.toString().startsWith(OR.getValue())) {
-                resultList.add(new OperatorElement(OR));
-                workStringBuilder.delete(0, OR.getValue().length());
+            } else if (workStringBuilder.toString().startsWith(OperatorElement.OperatorType.OR.getValue())) {
+                resultList.add(new OperatorElement(OperatorElement.OperatorType.OR));
+                workStringBuilder.delete(0, OperatorElement.OperatorType.OR.getValue().length());
 
             } else if (workStringBuilder.toString().startsWith(FilterElement.getStartWishString())) {
                 resultList.add(parseFilter(workStringBuilder));
@@ -42,11 +39,14 @@ public class SearchStringParser {
                 throw new IllegalArgumentException(workStringBuilder.toString());
             }
         }
+
         return resultList;
     }
 
     //Парсинг тела фильтра
     FilterElement parseFilter(StringBuilder workStringBuilder) {
+
+
         //Парсинг номер столбца
         workStringBuilder.delete(0, FilterElement.getStartWishString().length());
         int lengthNumber = workStringBuilder.indexOf("]");
@@ -54,7 +54,7 @@ public class SearchStringParser {
         workStringBuilder.delete(0, lengthNumber + 1);
 
         //Парсинг знака операции
-        FilterType filterType = FilterType.valueOfSymbol(workStringBuilder.substring(0, 1));
+        FilterElement.FilterType filterType = FilterElement.FilterType.valueOfSymbol(workStringBuilder.substring(0, 1));
         workStringBuilder.delete(0, filterType.getValue().length());
 
         //Парсинг условия

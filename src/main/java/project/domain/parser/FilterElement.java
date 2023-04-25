@@ -1,4 +1,4 @@
-package domain;
+package project.domain.parser;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,8 +12,8 @@ import lombok.ToString;
 @ToString
 public class FilterElement implements SearchElement {
     private int columnNumber;
-    private FilterType filter;
-    private String value;
+    private FilterType filterType;
+    private String filterValue;
 
     final static private String startWishString = "column";
 
@@ -23,7 +23,7 @@ public class FilterElement implements SearchElement {
 
     @Override
     public FilterType getType() {
-        return this.getFilter();
+        return this.getFilterType();
     }
 
     // Enum для представления фильтров

@@ -1,4 +1,4 @@
-package domain;
+package project.domain.parser;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,11 +12,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class OperatorElement implements SearchElement {
-    private OperatorType operator;
+    private OperatorType operatorType;
 
     @Override
     public OperatorType getType() {
-        return this.getOperator();
+        return this.getOperatorType();
     }
 
     // Enum для представления логических операторов
