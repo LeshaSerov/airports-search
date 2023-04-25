@@ -15,8 +15,8 @@ import java.util.Stack;
 
 public class ReversePolishNotationProcessor {
     private List<SearchElement> convertExpression(List<SearchElement> searchElementList) {
-        if (searchElementList.isEmpty())
-            return searchElementList;
+//        if (searchElementList.isEmpty())
+//            return searchElementList;
         List<SearchElement> resultList = new ArrayList<>();
         Stack<SearchElement> stack = new Stack<>();
 
@@ -59,8 +59,8 @@ public class ReversePolishNotationProcessor {
 
     public List<Airport> process(List<SearchElement> searchElementList, List<Airport> airportList) {
         List<SearchElement> elementList = convertExpression(searchElementList);
-        if (elementList.isEmpty())
-            return airportList;
+//        if (elementList.isEmpty())
+//            return airportList;
         Stack<Collection<Airport>> stack = new Stack<>();
         for (SearchElement element : elementList) {
             if (element instanceof FilterElement) {

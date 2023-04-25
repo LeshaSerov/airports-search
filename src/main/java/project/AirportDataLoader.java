@@ -39,12 +39,14 @@ public class AirportDataLoader {
      * с сортированными индексами и именами аэропортов.
      *
      * @param nameFile                  Имя файла, из которого производится загрузка данных
-     * @param sortedAirportIndexNameMap Словарь с сортированными индексами и именами аэропортов
+     * @param airportIndexList Список с сортированными индексами аэропортов
      * @return Список аэропортов, загруженных из файла
      */
-    public static List<Airport> loadListAirport(String nameFile, SortedMap<String, Long> sortedAirportIndexNameMap) {
+    public static List<Airport> loadListAirport(String nameFile, List<Long> airportIndexList) {
+
         //быстро
-        List<String> stringList = CsvReader.readDefinedStrings(nameFile, sortedAirportIndexNameMap);
+        List<String> stringList = CsvReader.readDefinedStrings(nameFile, airportIndexList);
+
 
         List<Airport> airportList = new ArrayList<>();
         for (String str : stringList)

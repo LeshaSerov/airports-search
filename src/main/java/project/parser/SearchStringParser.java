@@ -11,6 +11,9 @@ import java.util.List;
 public class SearchStringParser {
 
     public List<SearchElement> parse(String searchString) {
+//        if (searchString.isEmpty())
+//            return new ArrayList<>();
+//
         List<SearchElement> resultList = new ArrayList<>();
         StringBuilder workStringBuilder = new StringBuilder(searchString.toLowerCase());
 
@@ -45,7 +48,6 @@ public class SearchStringParser {
 
     //Парсинг тела фильтра
     FilterElement parseFilter(StringBuilder workStringBuilder) {
-
 
         //Парсинг номер столбца
         workStringBuilder.delete(0, FilterElement.getStartWishString().length());

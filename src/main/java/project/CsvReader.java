@@ -1,28 +1,23 @@
 package project;
 
-import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
+import java.io.*;
+import java.util.*;
+import java.util.stream.Collectors;
+
 public class CsvReader {
 
-    static public List<String> readDefinedStrings(String nameFile, SortedMap<String, Long> longSortedMap) {
-
-        //TODO переделать добавление в массив
+    static public List<String> readDefinedStrings(String nameFile, List<Long> airportIndexList){
         List<String> resultList = new ArrayList<>();
-        try (RandomAccessFile raf = new RandomAccessFile(nameFile.toString(), "r")) {
-            for (Map.Entry<String, Long> entry : longSortedMap.entrySet()) {
-                raf.seek(entry.getValue());
-                resultList.add(raf.readLine());
+        try (RandomAccessFile raf = new RandomAccessFile(nameFile, "r");
+             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(raf.getFD())))) {
+            for (Long entry : airportIndexList) {
+                raf.seek(entry);
+                String line = br.readLine();
+                resultList.add(line);
             }
-
-            //TODO Переделать catch
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
         return resultList;
     }
 }
