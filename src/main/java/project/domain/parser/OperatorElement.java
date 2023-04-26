@@ -5,8 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-
-// Класс для представления логических операторов
+/**
+ * Класс для представления логических операторов
+ */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,7 +20,9 @@ public class OperatorElement implements SearchElement {
         return this.getOperatorType();
     }
 
-    // Enum для представления логических операторов
+    /**
+     * Enum для представления логических операторов
+     */
     @Getter
     public enum OperatorType {
         AND("&"),
@@ -31,6 +34,13 @@ public class OperatorElement implements SearchElement {
             this.value = value;
         }
 
+        /**
+         * Метод valueOfSymbol() возвращает тип оператора фильтрации по символу оператора.
+         *
+         * @param operatorSymbol символ оператора
+         * @return OperatorType
+         * @throws IllegalArgumentException если символ оператора не соответствует ни одному из известных типов
+         */
         public static OperatorType valueOfSymbol(String operatorSymbol) {
             for (OperatorType operatorType : OperatorType.values()) {
                 if (operatorType.value.equals(operatorSymbol)) {

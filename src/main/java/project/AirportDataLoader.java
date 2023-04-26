@@ -1,5 +1,6 @@
 package project;
 
+import lombok.extern.slf4j.Slf4j;
 import project.domain.Airport;
 import project.parser.AirportStringParser;
 
@@ -8,13 +9,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.stream.Collectors;
 
+/**
+ * Класс AirportDataLoader предоставляет методы для загрузки данных о аэропортах из CSV-файлов.
+ */
+@Slf4j
 public class AirportDataLoader {
 
-    // Метод для загрузки данных из CSV-файла и добавления их в AirportSearchTree
-    public static AirportSearchTree loadAirportSearchTreeFromCsv(Path filePath) throws IOException {
+    /**
+     * Метод для загрузки данных из CSV-файла и добавления их в AirportSearchTree.
+     *
+     * @param filePath путь к CSV-файлу
+     * @return объект AirportSearchTree с загруженными данными
+     */
+    public static AirportSearchTree loadAirportSearchTreeFromCsv(Path filePath) {
         AirportSearchTree airportSearchTree = new AirportSearchTree();
         try {
             // Чтение всех строк из CSV-файла
@@ -24,36 +32,31 @@ public class AirportDataLoader {
             String lineToFind = "\"";
             for (String str : lines) {
                 // Предполагаем, что данные разделены запятыми, берем имя и удаляем кавычки
-                String titleAirport = str.split(",")[1].replace("\"", "");
-                airportSearchTree.addAirport(titleAirport.toLowerCase(), bytes);
+                String titleAirport = str.split(",")[1].replace("\"", "").toLowerCase();
+                airportSearchTree.addAirport(titleAirport, bytes, str.getBytes().length);
                 bytes += str.getBytes().length + System.lineSeparator().getBytes().length;
             }
-            return airportSearchTree;
         } catch (IOException ioException) {
-            throw new IOException("Ошибка чтения файла: " + filePath, ioException);
+            log.atError().log("Ошибка чтения файла: " + filePath, ioException);
         }
+        return airportSearchTree;
     }
 
     /**
-     * Метод для загрузки списка аэропортов из файла с использованием заданного словаря
-     * с сортированными индексами и именами аэропортов.
+     * Метод для загрузки списка аэропортов из файла с помощью парсинга строк с помощью AirportStringParser.
      *
-     * @param nameFile                  Имя файла, из которого производится загрузка данных
-     * @param airportIndexList Список с сортированными индексами аэропортов
-     * @return Список аэропортов, загруженных из файла
+     * @param nameFile                  имя файла
+     * @param airportDataForParsingList список названий аэропортов, их местоположение в файле и длину строк для парсинга
+     * @return список объектов Airport
      */
-    public static List<Airport> loadListAirport(String nameFile, List<Long> airportIndexList) {
-
-        //быстро
-        List<String> stringList = CsvReader.readDefinedStrings(nameFile, airportIndexList);
-
-
+    public static List<Airport> loadListAirport(String nameFile, List<AirportSearchTree.AirportDataForParsing> airportDataForParsingList) {
+        if (airportDataForParsingList.isEmpty())
+            return new ArrayList<>();
         List<Airport> airportList = new ArrayList<>();
-        for (String str : stringList)
-        {
+        List<String> stringList = CsvReader.readDefinedStrings(nameFile, airportDataForParsingList);
+        for (String str : stringList) {
             airportList.add(AirportStringParser.parse(str));
         }
-
         return airportList;
     }
 

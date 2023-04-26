@@ -5,12 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-// Класс для представления скобок
+/**
+ * Класс для представления скобок
+ */
 @Getter
 @Setter
 @AllArgsConstructor
 @ToString
-public class BracketElement implements SearchElement  {
+public class BracketElement implements SearchElement {
     private BracketType bracketType;
 
     @Override
@@ -18,7 +20,9 @@ public class BracketElement implements SearchElement  {
         return this.getBracketType();
     }
 
-    // Enum для представления скобок
+    /**
+     * Enum для представления скобок
+     */
     @Getter
     public enum BracketType {
         OPEN("("),
@@ -30,6 +34,13 @@ public class BracketElement implements SearchElement  {
             this.value = value;
         }
 
+        /**
+         * Метод valueOfSymbol() возвращает тип скобок по символу оператора.
+         *
+         * @param bracketSymbol символ оператора
+         * @return BracketType
+         * @throws IllegalArgumentException если символ оператора не соответствует ни одному из известных типов
+         */
         public static BracketType valueOfSymbol(String bracketSymbol) {
             for (BracketType bracketType : BracketType.values()) {
                 if (bracketType.value.equals(bracketSymbol)) {

@@ -1,14 +1,12 @@
 package project.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-
-import java.lang.reflect.Method;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Airport {
     private int index;
     private String name;
@@ -30,12 +28,17 @@ public class Airport {
         this.name = name;
     }
 
-    //НЕ ОПТИМИЗИРОВАННЫЙ
+    /**
+     * Неоптимизированный метод toString(), который возвращает строковое представление аэропорта
+     * с значениями всех полей, включая дополнительные колонки.
+     *
+     * @return строковое представление аэропорта
+     */
     @Override
     public String toString() {
         int countFields = this.getClass().getDeclaredFields().length;
         StringBuilder string = new StringBuilder("\"" + name + "\"[" + index);
-        for (int i = 2; i < countFields; i++) {
+        for (int i = 2; i <= countFields; i++) {
             Object object = getValueForColumn(i);
             if (object == null) {
                 string.append(", ").append("null");
@@ -48,6 +51,13 @@ public class Airport {
         return string.append("]").toString();
     }
 
+    /**
+     * Метод getValueForColumn() возвращает значение для указанной колонки.
+     *
+     * @param columnName номер колонки
+     * @return значение для указанной колонки
+     * @throws IllegalArgumentException если указано неверное имя колонки
+     */
     public Object getValueForColumn(int columnName) {
         switch (columnName) {
             case 1:

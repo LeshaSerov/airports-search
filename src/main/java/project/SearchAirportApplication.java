@@ -3,12 +3,13 @@ package project;
 import lombok.extern.slf4j.Slf4j;
 import project.domain.Airport;
 import project.domain.parser.SearchElement;
-import project.parser.SearchStringParser;
+import project.parser.FilterStringParser;
 
-import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.SortedMap;
 
 @Slf4j
 public class SearchAirportApplication {
@@ -16,46 +17,64 @@ public class SearchAirportApplication {
     AirportSearchTree searchTree;
 
     public SearchAirportApplication(String nameFile) {
-        try {
-            this.nameFile = nameFile;
-            searchTree = AirportDataLoader.loadAirportSearchTreeFromCsv(Paths.get(nameFile));
-        } catch (IOException e) {
-            log.atError().log(e.getMessage());
-        }
+        this.nameFile = nameFile;
+        searchTree = AirportDataLoader.loadAirportSearchTreeFromCsv(Paths.get(nameFile));
     }
 
     public void run() {
-        boolean repeat = true;
-        while (repeat) {
-            System.out.println("Введите фильтр: ");
-            Scanner scanner = new Scanner(System.in);
-//            String searchLine = scanner.nextLine();
-//            String searchString = "column[1]>10&(column[5]='GKA'||column[3]>'@')||column[1]<100&column[1]>10&(column[5]='GKA'||column[3]>'@')||column[1]<100";
-            String searchString = "column[1]>10||column[5]='GKA'";
-//            String searchString = "";
+        do {
+            try {
+                System.out.print("Введите фильтр: ");
+                Scanner scanner = new Scanner(System.in);
+                String searchString = scanner.nextLine();
+                if (searchString.equals("!quit")) {
+                    break;
+                }
 
-            System.out.println("Введите начало имени аэропорта: ");
-//            String startWithNameAirportString = scanner.nextLine();
-            String startWithNameAirportString = "Bo";
+                System.out.print("Введите начало имени аэропорта: ");
+                String startWithNameAirportString = scanner.nextLine();
 
-            long start = System.nanoTime();
-            SortedMap<String, Long> sortedAirportIndexNameMap = searchTree.searchAirports(startWithNameAirportString);
+                long start = System.nanoTime();
+                List<Airport> airportList = process(searchString, startWithNameAirportString);
+                long finish = System.nanoTime();
+                long elapsed = finish - start;
 
-            List<Airport> airportList = AirportDataLoader.loadListAirport(nameFile, new ArrayList<>(sortedAirportIndexNameMap.values()));
-            if (!searchString.isEmpty()) {
-                List<SearchElement> searchElementList = new SearchStringParser().parse(searchString);
-                airportList = new ReversePolishNotationProcessor().process(searchElementList, airportList);
+                for (Airport airport : airportList) {
+                    System.out.println(airport.toString());
+                }
+                System.out.println("Количество найденных строк: " + airportList.size());
+                System.out.println("Время, затраченное на поиск: " + (double) elapsed / 1000000 + " мс");
+
+                System.out.println();
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            long finish = System.nanoTime();
-
-            long elapsed = finish - start;
-            System.out.println("Количество найденных строк: " + airportList.size());
-            System.out.println("Время, затраченное на поиск: " + (double) elapsed / 1000000 + " мс");
-
-//            for (Airport airport : airportList) {
-//                System.out.println(airport.toString());
-//            }
-            repeat = false;
         }
+        while (true);
     }
+
+//                String searchString = "column[1]>10&(column[5]='GKA'||column[3]>'@')||column[1]<100&column[1]>10&(column[5]='GKA'||column[3]>'@')||column[1]<100";
+//            String searchString = "column[1]>10(&)column[5]='GKA'";
+//            String searchString = "a";
+
+    /**
+     * Метод обработки поиска аэропортов на основе заданных фильтров.
+     *
+     * @param searchString               Строка поиска, содержащая фильтры для поиска аэропортов.
+     * @param startWithNameAirportString Строка, содержащая начало имени аэропорта, для ограничения поиска только на аэропорты с соответствующим началом имени.
+     * @return Список аэропортов, удовлетворяющих заданным фильтрам.
+     */
+    public List<Airport> process(String searchString, String startWithNameAirportString) {
+        SortedMap<String, AirportSearchTree.AirportDataForParsing> sortedAirportIndexNameMap = searchTree.searchAirports(startWithNameAirportString.toLowerCase());
+        List<Airport> airportList = AirportDataLoader.loadListAirport(nameFile, new ArrayList<>(sortedAirportIndexNameMap.values()));
+
+        if (!searchString.isEmpty()) {
+            List<SearchElement> searchElementList = new FilterStringParser().parse(searchString);
+            airportList = new AirportFilterProcessor().process(searchElementList, airportList);
+        }
+        return airportList;
+    }
+
 }
+
