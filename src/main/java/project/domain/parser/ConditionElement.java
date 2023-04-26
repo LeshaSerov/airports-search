@@ -1,9 +1,6 @@
 package project.domain.parser;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * Класс для представления условий
@@ -12,6 +9,7 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class ConditionElement implements SearchElement {
     private int columnNumber;
     private ConditionType conditionType;

@@ -49,7 +49,7 @@ public class AirportDataLoader {
                 bytes += str.getBytes().length + countNextLine;
             }
         } catch (IOException ioException) {
-            log.atError().log("Ошибка чтения файла: " + filePath, ioException);
+            log.atError().log("Ошибка чтения файла: " + filePath);
         }
         return airportSearchTree;
     }

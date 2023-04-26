@@ -56,7 +56,7 @@ public class AirportStringParser {
                 airport.setColumn14(strings[13]);
 
         } catch (NumberFormatException | IndexOutOfBoundsException | ParseException e) {
-            log.atError().log("Ошибка парсинга строки: \"" + stringAirport + "\"", e);
+            log.atError().log("Ошибка парсинга строки: \"" + stringAirport + "\"");
         }
         return airport;
     }

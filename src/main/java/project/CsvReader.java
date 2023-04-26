@@ -27,7 +27,7 @@ public class CsvReader {
                 resultList.add(line);
             }
         } catch (IOException | StringIndexOutOfBoundsException e) {
-            log.atError().log("Ошибка чтения файла: " + nameFile, e);
+            log.atError().log("Ошибка чтения файла: " + nameFile);
         }
         return resultList;
     }
