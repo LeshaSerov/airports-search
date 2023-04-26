@@ -26,7 +26,7 @@ public class CsvReader {
                 String line = new String(buffer, 0, bytesRead); // преобразование буфера в строку
                 resultList.add(line);
             }
-        } catch (IOException e) {
+        } catch (IOException | StringIndexOutOfBoundsException e) {
             log.atError().log("Ошибка чтения файла: " + nameFile, e);
         }
         return resultList;

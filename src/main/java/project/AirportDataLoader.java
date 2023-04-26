@@ -5,6 +5,8 @@ import project.domain.Airport;
 import project.parser.AirportStringParser;
 
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -27,14 +29,24 @@ public class AirportDataLoader {
         try {
             // Чтение всех строк из CSV-файла
             List<String> lines = Files.readAllLines(filePath);
+
+            RandomAccessFile raf = new RandomAccessFile(filePath.toString(), "r");
+            raf.seek(lines.get(0).length());
+            raf.read();
+            int countNextLine = 1;
+            int numberSymbol = raf.read();
+            if (numberSymbol == 10 || numberSymbol == 13)
+            {
+                countNextLine++;
+            }
+
             // Парсинг данных из строк и добавление их в AirportSearchTree
             long bytes = 0;
-            String lineToFind = "\"";
             for (String str : lines) {
                 // Предполагаем, что данные разделены запятыми, берем имя и удаляем кавычки
                 String titleAirport = str.split(",")[1].replace("\"", "").toLowerCase();
                 airportSearchTree.addAirport(titleAirport, bytes, str.getBytes().length);
-                bytes += str.getBytes().length + System.lineSeparator().getBytes().length;
+                bytes += str.getBytes().length + countNextLine;
             }
         } catch (IOException ioException) {
             log.atError().log("Ошибка чтения файла: " + filePath, ioException);

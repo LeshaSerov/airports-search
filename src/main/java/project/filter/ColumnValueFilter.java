@@ -35,22 +35,22 @@ public class ColumnValueFilter {
                                 String stringValue = (String) value;
                                 switch (conditionType) {
                                     case LESS_THAN:
-                                        if (stringValue.compareTo(textCondition) < 0) {
+                                        if (stringValue.compareToIgnoreCase(textCondition) < 0) {
                                             resultList.add(airport);
                                         }
                                         break;
                                     case GREATER_THAN:
-                                        if (stringValue.compareTo(textCondition) > 0) {
+                                        if (stringValue.compareToIgnoreCase(textCondition) > 0) {
                                             resultList.add(airport);
                                         }
                                         break;
                                     case EQUAL_TO:
-                                        if (stringValue.equals(textCondition)) {
+                                        if (stringValue.compareToIgnoreCase(textCondition) == 0) {
                                             resultList.add(airport);
                                         }
                                         break;
                                     case NOT_EQUAL_TO:
-                                        if (!stringValue.equals(textCondition)) {
+                                        if (stringValue.compareToIgnoreCase(textCondition) != 0) {
                                             resultList.add(airport);
                                         }
                                         break;
