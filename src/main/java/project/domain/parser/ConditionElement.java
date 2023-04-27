@@ -1,12 +1,14 @@
 package project.domain.parser;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Класс для представления условий
  */
 @Getter
-@Setter
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
@@ -42,6 +44,17 @@ public class ConditionElement implements SearchElement {
             this.value = value;
         }
 
+        public static int maxLength() {
+            int maxValue = 0;
+            for (ConditionType conditionType : ConditionType.values()) {
+                int length = conditionType.value.length();
+                if (length > maxValue) {
+                    maxValue = length;
+                }
+            }
+            return maxValue;
+        }
+
         /**
          * Метод valueOfSymbol() возвращает тип условия фильтрации по символу оператора.
          *
@@ -50,12 +63,16 @@ public class ConditionElement implements SearchElement {
          * @throws IllegalArgumentException если символ оператора не соответствует ни одному из известных типов
          */
         public static ConditionType valueOfSymbol(String conditionSymbol) {
-            for (ConditionType conditionType : ConditionType.values()) {
-                if (conditionType.value.equals(conditionSymbol)) {
-                    return conditionType;
+            StringBuilder stringBuilder = new StringBuilder(conditionSymbol);
+            while (stringBuilder.length() != 0) {
+                for (ConditionType conditionType : ConditionType.values()) {
+                    if (conditionType.value.equals(stringBuilder.toString())) {
+                        return conditionType;
+                    }
                 }
+                stringBuilder.delete(stringBuilder.length()-1, stringBuilder.length());
             }
-            throw new IllegalArgumentException("Unknown symbol: " + conditionSymbol);
+            throw new IllegalArgumentException("Неизвестный символ: " + conditionSymbol);
         }
     }
 }

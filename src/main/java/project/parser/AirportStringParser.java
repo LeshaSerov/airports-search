@@ -3,8 +3,6 @@ package project.parser;
 import lombok.extern.slf4j.Slf4j;
 import project.domain.Airport;
 
-import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,9 +19,12 @@ public class AirportStringParser {
      */
     public static Airport parse(String stringAirport) {
         Airport airport = new Airport();
-        try {
-            stringAirport = stringAirport.replace("\\N", "");
+
+        stringAirport = stringAirport.replace("\\N", "");
             String[] strings = splitSeparatorAndRemovingQuotes(',', stringAirport);
+            if (strings.length < 14) {
+                throw new StringIndexOutOfBoundsException("Ошибка длины строки: \"" + stringAirport + "\"");
+            }
 
             airport.setName(strings[1]);
             if (!strings[2].equals(""))
@@ -35,16 +36,16 @@ public class AirportStringParser {
             if (!strings[5].equals(""))
                 airport.setColumn6(strings[5]);
 
-            DecimalFormat decimalFormat = new DecimalFormat();
-            airport.setIndex(decimalFormat.parse(strings[0]).intValue());
+            airport.setIndex(Integer.parseInt(strings[0]));
             if (!strings[6].equals(""))
-                airport.setColumn7(decimalFormat.parse(strings[6]).doubleValue());
+                airport.setColumn7(Double.parseDouble(strings[6]));
             if (!strings[7].equals(""))
-                airport.setColumn8(decimalFormat.parse(strings[7]).doubleValue());
+                airport.setColumn8(Double.parseDouble(strings[7]));
             if (!strings[8].equals(""))
-                airport.setColumn9(decimalFormat.parse(strings[8]).intValue());
+                airport.setColumn9(Integer.parseInt(strings[8]));
             if (!strings[9].equals(""))
-                airport.setColumn10(decimalFormat.parse(strings[9]).doubleValue());
+                airport.setColumn10(Double.parseDouble(strings[9]));
+
 
             if (!strings[10].equals(""))
                 airport.setColumn11(strings[10]);
@@ -55,9 +56,6 @@ public class AirportStringParser {
             if (!strings[13].equals(""))
                 airport.setColumn14(strings[13]);
 
-        } catch (NumberFormatException | IndexOutOfBoundsException | ParseException e) {
-            log.atError().log("Ошибка парсинга строки: \"" + stringAirport + "\"");
-        }
         return airport;
     }
 

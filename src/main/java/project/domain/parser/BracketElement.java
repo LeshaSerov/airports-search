@@ -1,12 +1,14 @@
 package project.domain.parser;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Класс для представления скобок
  */
 @Getter
-@Setter
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
@@ -32,20 +34,5 @@ public class BracketElement implements SearchElement {
             this.value = value;
         }
 
-        /**
-         * Метод valueOfSymbol() возвращает тип скобок по символу оператора.
-         *
-         * @param bracketSymbol символ оператора
-         * @return BracketType
-         * @throws IllegalArgumentException если символ оператора не соответствует ни одному из известных типов
-         */
-        public static BracketType valueOfSymbol(String bracketSymbol) {
-            for (BracketType bracketType : BracketType.values()) {
-                if (bracketType.value.equals(bracketSymbol)) {
-                    return bracketType;
-                }
-            }
-            throw new IllegalArgumentException("Unknown symbol: " + bracketSymbol);
-        }
     }
 }

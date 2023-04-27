@@ -7,22 +7,17 @@ import project.domain.parser.OperatorElement;
 import project.domain.parser.SearchElement;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FilterStringParserTest {
 
     @Test
-    void testParse() {
-        FilterStringParser parser = new FilterStringParser();
-
-        // Test case 1: Valid input string
-        String input1 = "column[0]='value1'&column[1]='value2'||(column[2]='value3'&column[3]='value4')";
+    void testParseStandard() {
+        String input = "column[0]='value1'&column[1]='value2'||(column[2]='value3'&column[3]='value4')";
+        List<SearchElement> actualOutput = new FilterStringParser().parse(input);
         List<SearchElement> expectedOutput = new ArrayList<>();
         expectedOutput.add(new ConditionElement(0, ConditionElement.ConditionType.EQUAL_TO, "value1"));
         expectedOutput.add(new OperatorElement(OperatorElement.OperatorType.AND));
@@ -33,25 +28,53 @@ class FilterStringParserTest {
         expectedOutput.add(new OperatorElement(OperatorElement.OperatorType.AND));
         expectedOutput.add(new ConditionElement(3, ConditionElement.ConditionType.EQUAL_TO, "value4"));
         expectedOutput.add(new BracketElement(BracketElement.BracketType.CLOSE));
-        assertThat(expectedOutput).isEqualTo(expectedOutput);
+        assertThat(actualOutput).isEqualTo(expectedOutput);
+    }
 
-        // Test case 2: Invalid input string
-        String input2 = "invalid string";
-        assertThat(parser.parse(input2)).isEqualTo(new ArrayList<SearchElement>());
+    @Test
+    void testParse2() {
+        String input = "(column[0]>'123')&(column[1]<'value2'||column[2]<>124)";
+        List<SearchElement> actualOutput = new FilterStringParser().parse(input);
+        List<SearchElement> expectedOutput = new ArrayList<>();
+        expectedOutput.add(new BracketElement(BracketElement.BracketType.OPEN));
+        expectedOutput.add(new ConditionElement(0, ConditionElement.ConditionType.GREATER_THAN, "123"));
+        expectedOutput.add(new BracketElement(BracketElement.BracketType.CLOSE));
+        expectedOutput.add(new OperatorElement(OperatorElement.OperatorType.AND));
+        expectedOutput.add(new BracketElement(BracketElement.BracketType.OPEN));
+        expectedOutput.add(new ConditionElement(1, ConditionElement.ConditionType.LESS_THAN, "value2"));
+        expectedOutput.add(new OperatorElement(OperatorElement.OperatorType.OR));
+        expectedOutput.add(new ConditionElement(2, ConditionElement.ConditionType.NOT_EQUAL_TO, "124"));
+        expectedOutput.add(new BracketElement(BracketElement.BracketType.CLOSE));
+        assertThat(actualOutput).isEqualTo(expectedOutput);
     }
 
     @Test
     void testParseCondition() {
         FilterStringParser parser = new FilterStringParser();
 
-        // Test case 1: Valid input string
-        StringBuilder input1 = new StringBuilder("column[0]='value'");
-        ConditionElement expectedOutput1 = new ConditionElement(0, ConditionElement.ConditionType.EQUAL_TO, "value");
-        assertThat(expectedOutput1).isEqualTo(parser.parseCondition(input1));
+        ConditionElement actualOutput = new FilterStringParser().parseCondition(new StringBuilder("column[0]='value'"));
+        ConditionElement expectedOutput = new ConditionElement(0, ConditionElement.ConditionType.EQUAL_TO, "value");
+        assertThat(expectedOutput).isEqualTo(actualOutput);
 
-        // Test case 2: Invalid input string
         StringBuilder input2 = new StringBuilder("invalid string");
         assertThatThrownBy(() -> parser.parseCondition(input2)).isInstanceOf(StringIndexOutOfBoundsException.class);
     }
 
+    @Test
+    void testParse3(){
+        assertThatThrownBy(() -> new FilterStringParser().parse("column[]=value'")).isInstanceOf(NumberFormatException.class);
+    }
+
+    @Test
+    void testParse4(){
+        assertThatThrownBy(() -> new FilterStringParser().parse("column[!]=value'")).isInstanceOf(NumberFormatException.class);
+    }
+    @Test
+    void testParse5(){
+        assertThat(new FilterStringParser().parse("column[0=value'")).isEqualTo(new ArrayList<SearchElement>());
+    }
+    @Test
+    void testParse6(){
+        assertThat(new FilterStringParser().parse("column[0]'")).isEqualTo(new ArrayList<SearchElement>());
+    }
 }

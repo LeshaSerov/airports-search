@@ -1,6 +1,7 @@
 package project;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections4.trie.PatriciaTrie;
@@ -25,6 +26,7 @@ public class AirportSearchTree {
     @Getter
     @Setter
     @AllArgsConstructor
+    @EqualsAndHashCode
     public static class AirportDataForParsing {
         private long numberOfBytesUpTo;
         private int length;

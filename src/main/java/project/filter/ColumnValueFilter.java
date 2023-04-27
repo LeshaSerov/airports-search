@@ -15,9 +15,9 @@ public class ColumnValueFilter {
     /**
      * Метод filter осуществляет фильтрацию списка объектов Airport на основе условия, заданного в объекте ConditionElement.
      *
-     * @param list             Список объектов Airport, который требуется отфильтровать.
+     * @param list             Список объектов Airport, который требуется отфильтровать. Не изменяет исходный список.
      * @param conditionElement Объект ConditionElement, содержащий условие для фильтрации.
-     * @return Новый отфильтрованный список объектов Airport, удовлетворяющих условию.
+     * @return Отфильтрованный список объектов Airport, удовлетворяющих условию.
      */
     public static List<Airport> filter(List<Airport> list, ConditionElement conditionElement) {
         List<Airport> resultList = new ArrayList<>();
@@ -71,12 +71,12 @@ public class ColumnValueFilter {
                                         }
                                         break;
                                     case EQUAL_TO:
-                                        if (doubleValue == limit) {
+                                        if (doubleValue - limit < 0.000000000001) {
                                             resultList.add(airport);
                                         }
                                         break;
                                     case NOT_EQUAL_TO:
-                                        if (doubleValue != limit) {
+                                        if (doubleValue - limit >= 0.000000000001) {
                                             resultList.add(airport);
                                         }
                                         break;
@@ -112,8 +112,8 @@ public class ColumnValueFilter {
                     }
                 }
             }
-        } catch (NumberFormatException e) {
-            log.atError().log("Ошибка проверки на соотвествие условию: "
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Ошибка проверки на соотвествие условию: "
                     + conditionElement.getClass().getSimpleName()
                     + "["
                     + conditionElement.getColumnNumber() + ":"

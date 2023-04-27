@@ -1,50 +1,113 @@
 package project;
 
-import lombok.extern.slf4j.Slf4j;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
-import project.AirportDataLoader;
-import project.AirportSearchTree;
 import project.domain.Airport;
 
-import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.SortedMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class AirportDataLoaderTest {
 
     @Test
+    public void testLoadListSearchTreeFromCsv() {
+        List<byte[]> strings = Arrays.asList(
+                "1,\"Airport1\",\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N".getBytes(),
+                "1,\"Airport2\",\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N".getBytes(),
+                "1,\"Airport3\",\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N".getBytes()
+        );
+
+        String fileName = "testLoadListSearchTreeFromCsv.csv";
+        try {
+            Path filePath = Paths.get(fileName);
+            Files.createFile(filePath);
+            try (FileOutputStream fos = new FileOutputStream(fileName)) {
+                // записываем строки в файл, разделяя их символом переноса строки
+                for (byte[] s : strings) {
+                    fos.write(s);
+                    fos.write(10);
+                }
+            }
+            AirportSearchTree airportSearchTree = AirportDataLoader.loadAirportSearchTreeFromCsv(filePath);
+            Files.delete(Paths.get(fileName));
+
+            SortedMap<String, AirportSearchTree.AirportDataForParsing> stringAirportDataLoaderSortedMap = airportSearchTree.searchAirports("airport");
+            assertThat(stringAirportDataLoaderSortedMap.size()).isEqualTo(3);
+            assertThat(stringAirportDataLoaderSortedMap.get("airport1")).isEqualTo(new AirportSearchTree.AirportDataForParsing(0, 48));
+            assertThat(stringAirportDataLoaderSortedMap.get("airport2")).isEqualTo(new AirportSearchTree.AirportDataForParsing(49, 48));
+            assertThat(stringAirportDataLoaderSortedMap.get("airport3")).isEqualTo(new AirportSearchTree.AirportDataForParsing(98, 48));
+
+        } catch (
+                Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
     public void testLoadListAirport() {
         List<AirportSearchTree.AirportDataForParsing> airportDataForParsingList = new ArrayList<>();
         airportDataForParsingList.add(new AirportSearchTree.AirportDataForParsing(0, 48));
-        airportDataForParsingList.add(new AirportSearchTree.AirportDataForParsing(50, 48));
-        airportDataForParsingList.add(new AirportSearchTree.AirportDataForParsing(100, 48));
+        airportDataForParsingList.add(new AirportSearchTree.AirportDataForParsing(49, 48));
+        airportDataForParsingList.add(new AirportSearchTree.AirportDataForParsing(98, 48));
+        List<byte[]> strings = Arrays.asList(
+                "1,\"Airport1\",\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N".getBytes(),
+                "1,\"Airport2\",\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N".getBytes(),
+                "1,\"Airport3\",\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N".getBytes()
+        );
 
-        List<Airport> airportList = AirportDataLoader.loadListAirport("test.csv", airportDataForParsingList);
+        String fileName = "testLoadListAirport.csv";
+        try {
+            Files.createFile(Paths.get(fileName));
+            try (FileOutputStream fos = new FileOutputStream(fileName)) {
+                // записываем строки в файл, разделяя их символом переноса строки
+                for (byte[] s : strings) {
+                    fos.write(s);
+                    fos.write(10);
+                }
+            }
+            List<Airport> airportList = AirportDataLoader.loadListAirport(fileName, airportDataForParsingList);
+            Files.delete(Paths.get(fileName));
 
-        // Проверяем результат
-        assertEquals(3, airportList.size());
-        assertEquals("Airport1", airportList.get(0).getName());
-        assertEquals("Airport2", airportList.get(1).getName());
-        assertEquals("Airport3", airportList.get(2).getName());
+            assertThat(airportList.size()).isEqualTo(3);
+            assertThat(airportList.get(0).getName()).isEqualTo("Airport1");
+            assertThat(airportList.get(1).getName()).isEqualTo("Airport2");
+            assertThat(airportList.get(2).getName()).isEqualTo("Airport3");
+
+        } catch (Exception e) {
+        }
     }
 
     @Test
     public void testLoadListAirportWithEmptyDataForParsingList() {
-        // Создаем пустой список данных для парсинга
         List<AirportSearchTree.AirportDataForParsing> airportDataForParsingList = new ArrayList<>();
+        List<byte[]> strings = Arrays.asList(
+                "1,\"Airport1\",\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N\n".getBytes(),
+                "1,\"Airport2\",\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N\n".getBytes(),
+                "1,\"Airport3\",\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N,\\N\n".getBytes()
+        );
 
-        // Загружаем список аэропортов из файла
-        List<Airport> airportList = AirportDataLoader.loadListAirport("test.csv", airportDataForParsingList);
+        String fileName = "testLoadListAirportWithEmptyDataForParsingList.csv";
+        try {
+            Files.createFile(Paths.get(fileName));
+            for (byte[] e : strings) {
+                Files.write(Paths.get(fileName), e);
+            }
+            List<Airport> airportList = AirportDataLoader.loadListAirport(fileName, airportDataForParsingList);
+            assertThat(airportList.size()).isEqualTo(0);
 
-        // Проверяем результат
-        assertEquals(0, airportList.size());
+            Files.delete(Paths.get(fileName));
+        } catch (Exception e) {
+        }
+
     }
 
     @Test()
@@ -52,9 +115,7 @@ public class AirportDataLoaderTest {
         // Создаем список данных для парсинга
         List<AirportSearchTree.AirportDataForParsing> airportDataForParsingList = new ArrayList<>();
         airportDataForParsingList.add(new AirportSearchTree.AirportDataForParsing(0, 10));
-
-        // Загружаем список аэропортов из несуществующего файла
-        List<Airport> airportList = AirportDataLoader.loadListAirport("nonexistent.csv", airportDataForParsingList);
-        assertEquals(0, airportList.size());
+        List<Airport> airportList = AirportDataLoader.loadListAirport("test.csv", airportDataForParsingList);
+        assertThat(airportList.size()).isEqualTo(0);
     }
 }

@@ -94,4 +94,8 @@ public class Airport {
                 throw new IllegalArgumentException("Неверное имя колонки: " + columnName);
         }
     }
+
+    public int compareTo(Airport airport) {
+        return this.name.toLowerCase().compareTo(airport.name.toLowerCase());
+    }
 }
