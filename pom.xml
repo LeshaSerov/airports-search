@@ -104,7 +104,17 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
+        <resources>
+            <resource>
+                <directory>${basedir}</directory>
+                <includes>
+                    <include>airports.csv</include>
+                </includes>
+                <targetPath>${build.directory}</targetPath>
+            </resource>
+        </resources>
     </build>
     <properties>
         <slf4jVersion>2.0.7</slf4jVersion>
